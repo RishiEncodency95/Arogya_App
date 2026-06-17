@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const NextSession = () => {
     return (
@@ -10,7 +10,7 @@ export const NextSession = () => {
                 <View style={styles.contentRow}>
                     {/* Left Icon Circle */}
                     <View style={styles.iconCircle}>
-                        <FontAwesome5 name="calendar-alt" size={20} color="#1a3a2e" />
+                        <MaterialCommunityIcons name="calendar-clock-outline" size={30} color="#0B3024" />
                     </View>
 
                     {/* Middle Content */}
@@ -22,7 +22,7 @@ export const NextSession = () => {
                             The Future of Integrative Healthcare
                         </Text>
                         <View style={styles.infoRow}>
-                            <Ionicons name="person-outline" size={13} color="rgba(255,255,255,0.6)" />
+                            <Ionicons name="person-outline" size={14} color="#9BB883" />
                             <Text style={styles.infoText}>
                                 Dr. Vaidya Balendu Prakash
                             </Text>
@@ -30,13 +30,16 @@ export const NextSession = () => {
                             <Text style={styles.infoText}>Hall A</Text>
                         </View>
                         <View style={styles.timeRow}>
-                            <Ionicons name="time-outline" size={13} color="rgba(255,255,255,0.6)" />
+                            <Ionicons name="time-outline" size={14} color="#9BB883" />
                             <Text style={styles.infoText}>
                                 10:00 AM – 11:00 AM
                             </Text>
                         </View>
                     </View>
                 </View>
+
+                {/* Vertical Divider */}
+                <View style={styles.verticalDivider} />
 
                 {/* Right - Timer */}
                 <View style={styles.timerContainer}>
@@ -53,18 +56,22 @@ export const NextSession = () => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 12,
-        paddingVertical: 12,
+        paddingHorizontal: 6,
+        paddingVertical: 6,
     },
     card: {
-        backgroundColor: '#1a3a2e',
-        borderRadius: 16,
-        paddingHorizontal: 12,
-        paddingVertical: 24,
+        backgroundColor: '#073220', // Darker rich green
+        borderRadius: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: 16,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 6,
     },
     contentRow: {
         flex: 1,
@@ -72,66 +79,74 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     iconCircle: {
-        width: 64,
-        height: 64,
-        borderRadius: 32,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
-        flexShrink: 0,
-        padding: 16,
-        marginRight: 16,
-        backgroundColor: 'rgba(255,255,255,1)',
-        borderWidth: 1.5,
-        borderColor: 'rgba(255,255,255,0.2)',
+        marginRight: 10,
     },
     middleContent: {
         flex: 1,
     },
     sessionLabel: {
         fontSize: 10,
-        fontWeight: '600',
-        letterSpacing: 1.2,
+        fontWeight: '700',
+        color: '#9BB883', // Olive/light green
+        letterSpacing: 0.5,
         marginBottom: 4,
-        color: '#4ade80',
+        textTransform: 'uppercase',
     },
     sessionTitle: {
-        color: 'white',
-        fontSize: 14,
+        color: '#CEDDDE',
+        fontSize: 13,
         fontWeight: '600',
         lineHeight: 20,
-        marginBottom: 8,
+        marginBottom: 6,
     },
     infoRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 4,
         marginBottom: 4,
+        flexWrap: 'wrap',
     },
     timeRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 4,
     },
     infoText: {
-        color: 'rgba(255,255,255,0.65)',
+        color: 'rgba(255,255,255,0.85)',
         fontSize: 10,
+        marginLeft: 4,
+        flexShrink: 1,
     },
     infoDot: {
-        color: 'rgba(255,255,255,0.4)',
+        color: 'rgba(255,255,255,0.85)',
         fontSize: 10,
+        marginHorizontal: 2,
+    },
+    verticalDivider: {
+        width: 1,
+        alignSelf: 'stretch',
+        backgroundColor: '#53765A',
+        marginHorizontal: 10,
+        marginVertical: 4,
     },
     timerContainer: {
         alignItems: 'center',
-        minWidth: 'auto',
+        justifyContent: 'center',
+        minWidth: 45,
     },
     timerLabel: {
-        color: 'rgba(255,255,255,0.6)',
+        color: 'rgba(255,255,255,0.85)',
         fontSize: 10,
     },
     timerValue: {
-        color: 'white',
+        color: '#FFFFFF',
         fontWeight: 'bold',
-        fontSize: 20,
-        lineHeight: 25,
+        fontSize: 30,
+        lineHeight: 34,
+        marginVertical: 2,
     },
 });
