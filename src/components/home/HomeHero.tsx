@@ -6,8 +6,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const HERO_IMAGES = [
     require('../../assets/home/homehero.png'),
-    // require('../../assets/home/homehero1.png'),
-    // require('../../assets/home/homehero2.png'),
+    require('../../assets/home/homehero1.png'),
+    require('../../assets/home/homehero2.png'),
 ];
 
 export const HomeHero = () => {
@@ -114,9 +114,10 @@ export const HomeHero = () => {
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 0,
-        marginTop: 0,
+        marginHorizontal: 12,
+        marginTop: 8,
         marginBottom: 16,
+        borderRadius: 202,
         overflow: 'hidden',
         flexDirection: 'row',
     },
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     },
     subtitleContainer: {
         borderLeftWidth: 2,
-        borderLeftColor: '#9CA3AF',
+        borderLeftColor: '#005f33',
         paddingLeft: 8,
         marginBottom: 10,
         marginTop: 4,
