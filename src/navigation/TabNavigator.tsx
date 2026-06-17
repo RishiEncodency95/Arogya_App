@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, List, Users, Grid2x2, User } from 'lucide-react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HomeScreen } from '../screens/HomeScreen';
@@ -13,44 +13,54 @@ import { MenuScreen } from '../screens/MenuScreen';
 
 const Tab = createBottomTabNavigator();
 
-const GOLD = '#DFB143';
-const INACTIVE = 'rgba(255,255,255,0.8)';
-const BG = '#071f15';
+const ACTIVE = '#064E3B'; // Dark Green
+const INACTIVE = '#6B7280'; // Gray
+const BG = '#FFFFFF';
 
-type IconProps = { color: string; size: number };
-type TabIconProps = { focused: boolean; icon: React.ReactNode };
-
-const TabIcon = ({ focused, icon }: TabIconProps) => (
-  <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-    {icon}
-  </View>
+const QRButton = ({ children, onPress }: any) => (
+  <TouchableOpacity
+    style={styles.qrButtonWrapper}
+    onPress={onPress}
+    activeOpacity={0.8}
+  >
+    <View style={styles.qrButtonInner}>
+      <Ionicons name="qr-code-outline" size={24} color="#FFF" />
+      <Text style={styles.qrText}>QR Pass</Text>
+    </View>
+  </TouchableOpacity>
 );
+
+const QRPassScreen = () => <PlaceholderScreen title="QR Pass" />;
 
 export const TabNavigator = () => {
   const insets = useSafeAreaInsets();
-  const bottom = insets.bottom > 0 ? insets.bottom : 8;
+  const bottom = insets.bottom > 0 ? insets.bottom - 10 : 10;
 
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: GOLD,
+        tabBarActiveTintColor: ACTIVE,
         tabBarInactiveTintColor: INACTIVE,
         tabBarStyle: {
           backgroundColor: BG,
-          borderTopWidth: 1.5,
-          borderTopColor: GOLD,
-          paddingBottom: bottom,
-          paddingTop: 6,
-          height: 56 + bottom,
-          elevation: 20,
+          marginBottom: bottom > 0 ? bottom : 10,
+          marginHorizontal: 10,
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOpacity: 0.1,
+          shadowOffset: { width: 0, height: 4 },
+          shadowRadius: 10,
+          borderTopWidth: 0,
+          borderRadius: 40,
+          height: 64,
+          paddingBottom: 8,
+          paddingTop: 8,
         },
         tabBarLabelStyle: {
-          fontSize: 8,
-          fontWeight: '700',
-          letterSpacing: 0.8,
-          textTransform: 'uppercase',
-          marginTop: 1,
+          fontSize: 10,
+          fontWeight: '600',
+          marginTop: 2,
         },
       }}
     >
@@ -58,44 +68,44 @@ export const TabNavigator = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused, color }: IconProps & { focused: boolean }) => (
-            <TabIcon focused={focused} icon={<Home color={color} size={22} strokeWidth={focused ? 2.5 : 1.8} />} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="Tracks"
+        name="Schedule"
         component={TracksScreen}
         options={{
-          tabBarIcon: ({ focused, color }: IconProps & { focused: boolean }) => (
-            <TabIcon focused={focused} icon={<List color={color} size={22} strokeWidth={focused ? 2.5 : 1.8} />} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'calendar' : 'calendar-outline'} size={24} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="Speakers"
+        name="QR Pass"
+        component={QRPassScreen}
+        options={{
+          tabBarLabel: () => null,
+          tabBarIcon: () => null,
+          tabBarButton: (props) => <QRButton {...props} />,
+        }}
+      />
+      <Tab.Screen
+        name="Network"
         component={SpeakersScreen}
         options={{
-          tabBarIcon: ({ focused, color }: IconProps & { focused: boolean }) => (
-            <TabIcon focused={focused} icon={<Users color={color} size={22} strokeWidth={focused ? 2.5 : 1.8} />} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'people' : 'people-outline'} size={24} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="Menu"
+        name="More"
         component={MenuScreen}
         options={{
-          tabBarIcon: ({ focused, color }: IconProps & { focused: boolean }) => (
-            <TabIcon focused={focused} icon={<Grid2x2 color={color} size={22} strokeWidth={focused ? 2.5 : 1.8} />} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ focused, color }: IconProps & { focused: boolean }) => (
-            <TabIcon focused={focused} icon={<User color={color} size={22} strokeWidth={focused ? 2.5 : 1.8} />} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'grid' : 'grid-outline'} size={24} color={color} />
           ),
         }}
       />
@@ -104,12 +114,30 @@ export const TabNavigator = () => {
 };
 
 const styles = StyleSheet.create({
-  iconWrap: {
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-    borderRadius: 20,
+  qrButtonWrapper: {
+    top: -24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#064E3B',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 8,
   },
-  iconWrapActive: {
-    backgroundColor: 'rgba(223, 177, 67, 0.15)',
+  qrButtonInner: {
+    width: 66,
+    height: 66,
+    borderRadius: 33,
+    backgroundColor: '#064E3B',
+    borderWidth: 4,
+    borderColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  qrText: {
+    color: '#FFF',
+    fontSize: 9,
+    fontWeight: '600',
+    marginTop: 2,
   },
 });
