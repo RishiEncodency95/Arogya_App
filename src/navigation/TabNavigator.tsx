@@ -13,8 +13,8 @@ import { MenuScreen } from '../screens/MenuScreen';
 
 const Tab = createBottomTabNavigator();
 
-const ACTIVE = '#064E3B'; // Dark Green
-const INACTIVE = '#6B7280'; // Gray
+const ACTIVE = '#064E3B'; 
+const INACTIVE = '#6B7280';
 const BG = '#FFFFFF';
 
 const QRButton = ({ children, onPress }: any) => (

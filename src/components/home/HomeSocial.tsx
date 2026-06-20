@@ -10,7 +10,7 @@ export const HomeSocial = () => {
             {/* Card 1: Stay Connected */}
             <View style={styles.card}>
                 <Text style={styles.cardTitle}>Stay Connected</Text>
-                
+
                 <View style={styles.socialGrid}>
                     <TouchableOpacity style={[styles.socialIcon, { backgroundColor: '#1877F2' }]} activeOpacity={0.8}>
                         <FontAwesome5 name="facebook-f" size={12} color="#FFF" />
@@ -46,7 +46,7 @@ export const HomeSocial = () => {
                         <Text style={styles.viewAllText}>View All</Text>
                     </TouchableOpacity>
                 </View>
-                
+
                 <View style={styles.notificationList}>
                     {/* Item 1 */}
                     <View style={styles.notifItem}>
@@ -61,7 +61,7 @@ export const HomeSocial = () => {
                             <Text style={styles.notifDesc} numberOfLines={2}>Session in Hall B moved to Hall C</Text>
                         </View>
                     </View>
-                    
+
                     {/* Item 2 */}
                     <View style={styles.notifItem}>
                         <View style={[styles.notifIconCircle, { backgroundColor: '#F59E0B' }]}>
@@ -95,7 +95,6 @@ export const HomeSocial = () => {
             {/* Card 3: Need Help? */}
             <View style={styles.card}>
                 <Text style={styles.cardTitle}>Need Help?</Text>
-                
                 <View style={styles.helpList}>
                     {/* Help Item 1 */}
                     <TouchableOpacity style={styles.helpItem} activeOpacity={0.7}>
@@ -145,8 +144,8 @@ const styles = StyleSheet.create({
     card: {
         flex: 1,
         backgroundColor: '#FFFFFF',
-        borderRadius: 12,
-        padding: 8,
+        borderRadius: 8,
+        padding: 6,
         borderWidth: 1,
         borderColor: '#F3F4F6',
         shadowColor: '#000',
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.04,
         shadowRadius: 6,
         elevation: 2,
-        minHeight: 150,
+        minHeight: 120,
         justifyContent: 'space-between',
     },
     cardTitle: {
@@ -171,8 +170,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     socialIcon: {
-        width: 20,
-        height: 20,
+        width: 32,
+        height: 32,
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
@@ -188,7 +187,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: 4,
     },
     viewAllText: {
         fontSize: 8,
@@ -222,7 +221,7 @@ const styles = StyleSheet.create({
         marginBottom: 0,
     },
     notifTitle: {
-        fontSize: 8,
+        fontSize: 7,
         fontWeight: '700',
         color: '#1F2937',
         flex: 1,

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  StatusBar, ImageBackground, KeyboardAvoidingView, Platform, Dimensions
+  StatusBar, Image, KeyboardAvoidingView, Platform, Dimensions, Keyboard, Modal
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -22,10 +22,38 @@ const LotusIcon = ({ color = GREEN, size = 18 }) => (
   </Svg>
 );
 
+const COUNTRIES = [
+  { code: '+91', name: 'India', flag: '🇮🇳' },
+  { code: '+1', name: 'USA', flag: '🇺🇸' },
+  { code: '+44', name: 'UK', flag: '🇬🇧' },
+  { code: '+61', name: 'Australia', flag: '🇦🇺' },
+  { code: '+971', name: 'UAE', flag: '🇦🇪' },
+];
+
 export const LoginScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const [mobile, setMobile] = useState('');
   const [fullName, setFullName] = useState('');
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  
+  const [countryCode, setCountryCode] = useState('+91');
+  const [isCountryModalVisible, setCountryModalVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => setKeyboardVisible(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setKeyboardVisible(false)
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const handleLogin = () => {
     // Navigate to OTP for verification
@@ -35,18 +63,21 @@ export const LoginScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
-      <ImageBackground
+      {/* Absolute Background Image so it NEVER moves or shrinks */}
+      <Image
         source={require('../../assets/auth/login.png')}
-        style={styles.backgroundImage}
+        style={styles.absoluteBackground}
         resizeMode="cover"
+      />
+
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior="padding"
       >
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: isKeyboardVisible ? 0 : (Platform.OS === 'ios' ? 30 : 100) }]}>
           {/* Card */}
           <View style={styles.card}>
             <Text style={styles.title}>Welcome </Text>
@@ -62,6 +93,18 @@ export const LoginScreen = () => {
             {/* Mobile Input */}
             <View style={styles.inputContainer}>
               <Icon name="phone" size={18} color={GREEN} style={styles.inputIcon} />
+
+              <TouchableOpacity 
+                style={styles.countryCode} 
+                activeOpacity={0.7} 
+                onPress={() => setCountryModalVisible(true)}
+              >
+                <Text style={styles.countryCodeText}>{countryCode}</Text>
+                <Icon name="chevron-down" size={16} color="#666" />
+              </TouchableOpacity>
+
+              <View style={styles.verticalDivider} />
+
               <TextInput
                 style={styles.input}
                 placeholder="Mobile Number"
@@ -70,10 +113,6 @@ export const LoginScreen = () => {
                 value={mobile}
                 onChangeText={setMobile}
               />
-              <View style={styles.countryCode}>
-                <Text style={styles.countryCodeText}>+91</Text>
-                <Icon name="chevron-down" size={16} color="#333" />
-              </View>
             </View>
 
             {/* Full Name Input */}
@@ -98,27 +137,67 @@ export const LoginScreen = () => {
           </View>
 
         </View>
-      </ImageBackground>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+
+      {/* Country Code Modal */}
+      <Modal
+        visible={isCountryModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setCountryModalVisible(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPressOut={() => setCountryModalVisible(false)}
+        >
+          <TouchableOpacity activeOpacity={1} style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Select Country Code</Text>
+            
+            {COUNTRIES.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.countryItem}
+                onPress={() => {
+                  setCountryCode(item.code);
+                  setCountryModalVisible(false);
+                }}
+              >
+                <Text style={styles.countryItemFlag}>{item.flag}</Text>
+                <Text style={styles.countryItemName}>{item.name}</Text>
+                <Text style={styles.countryItemCode}>{item.code}</Text>
+              </TouchableOpacity>
+            ))}
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
+
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
-  backgroundImage: {
-    flex: 1,
+  absoluteBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     width: '100%',
     height: '100%',
-    justifyContent: 'flex-end',
+  },
+  keyboardView: {
+    flex: 1,
   },
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingBottom: 100,
   },
   card: {
     width: '100%',
@@ -175,7 +254,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   inputIcon: {
-    marginRight: 12,
+    marginRight: 10,
   },
   input: {
     flex: 1,
@@ -186,7 +265,13 @@ const styles = StyleSheet.create({
   countryCode: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 10,
+    marginRight: 6,
+  },
+  verticalDivider: {
+    width: 1,
+    height: 20,
+    backgroundColor: BORDER,
+    marginRight: 6,
   },
   countryCodeText: {
     fontSize: 15,
@@ -196,6 +281,46 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     padding: 4,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  countryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  countryItemFlag: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  countryItemName: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+  },
+  countryItemCode: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
   },
   forgotBtn: {
     alignSelf: 'flex-end',

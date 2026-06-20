@@ -1,99 +1,63 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  Image,
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
+  StatusBar, Image, KeyboardAvoidingView, Platform, Keyboard
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Svg, { Ellipse, Circle, Path, Rect } from 'react-native-svg';
+import Svg, { Path, Circle, Rect } from 'react-native-svg';
+import Icon from 'react-native-vector-icons/Feather';
 
-const GREEN = '#1a5c3a';
-const GOLD = '#d4922a';
-const LIGHT_BG = '#f8f9f5';
-const BORDER = '#dce8d4';
+const GREEN = '#0A4232';
+const CREAM = '#F8F9F5';
 const MUTED = '#8a9a88';
-const MUTED_TEXT = '#6b7c6a';
 
-// ── Leaf Background SVG ────────────────────────────────────────────────────────
-const LeafBackground = () => (
-  <View style={StyleSheet.absoluteFill} pointerEvents="none">
-    <Svg width="375" height="812" viewBox="0 0 375 812">
-      {/* Top-right leaves */}
-      <Ellipse cx="340" cy="80" rx="60" ry="100" fill="#d4e8cc" opacity="0.4"
-        transform="rotate(-30, 340, 80)" />
-      <Ellipse cx="330" cy="60" rx="35" ry="60" fill="#b8d4a8" opacity="0.3"
-        transform="rotate(-30, 330, 60)" />
-      {/* Top-left leaves */}
-      <Ellipse cx="20" cy="140" rx="55" ry="90" fill="#d4e8cc" opacity="0.35"
-        transform="rotate(40, 20, 140)" />
-      <Ellipse cx="30" cy="120" rx="30" ry="55" fill="#b8d4a8" opacity="0.25"
-        transform="rotate(40, 30, 120)" />
-      {/* Bottom leaves */}
-      <Ellipse cx="10" cy="700" rx="50" ry="80" fill="#d4e8cc" opacity="0.35"
-        transform="rotate(20, 10, 700)" />
-      <Ellipse cx="355" cy="720" rx="45" ry="75" fill="#d4e8cc" opacity="0.3"
-        transform="rotate(-40, 355, 720)" />
-      {/* Gold sparkles */}
-      <Circle cx="180" cy="50" r="4" fill={GOLD} opacity="0.4" />
-      <Circle cx="290" cy="180" r="5" fill={GOLD} opacity="0.5" />
-      <Circle cx="80" cy="220" r="3.5" fill={GOLD} opacity="0.4" />
-      <Circle cx="320" cy="520" r="4" fill={GOLD} opacity="0.3" />
-    </Svg>
-  </View>
-);
-
-
-// ── Check Badge ────────────────────────────────────────────────────────────────
-const CheckBadge = () => (
-  <View style={styles.checkBadge}>
-    <Svg width="14" height="14" viewBox="0 0 14 14">
-      <Path d="M3 7L5.5 9.5L11 4" stroke="white" strokeWidth="2"
-        strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  </View>
-);
-
-// ── Trust Icons ────────────────────────────────────────────────────────────────
-const ShieldCheckIcon = ({ color = GREEN }: { color?: string }) => (
-  <Svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <Path d="M11 2L4 6V11C4 15.4 7 19.4 11 20.5C15 19.4 18 15.4 18 11V6L11 2Z"
-      stroke={color} strokeWidth="1.5" />
-    <Path d="M8 11L10 13L14 9" stroke={color} strokeWidth="1.5"
-      strokeLinecap="round" strokeLinejoin="round" />
+const LotusIcon = ({ color = GREEN, size = 18 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M12 2C12 2 15 7 15 11C15 15 12 18 12 18C12 18 9 15 9 11C9 7 12 2 12 2Z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" />
+    <Path d="M12 18C12 18 17 17 20 13C23 9 20 5 20 5C20 5 18 9 15 11C13 12.3333 12 18 12 18Z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" />
+    <Path d="M12 18C12 18 7 17 4 13C1 9 4 5 4 5C4 5 6 9 9 11C11 12.3333 12 18 12 18Z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" />
   </Svg>
 );
 
-const LockIcon = () => (
-  <Svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <Rect x="5" y="9" width="12" height="10" rx="2" stroke={GOLD} strokeWidth="1.5" />
-    <Path d="M8 9V7a3 3 0 016 0v2" stroke={GOLD} strokeWidth="1.5" strokeLinecap="round" />
-    <Circle cx="11" cy="14" r="1.5" fill={GOLD} />
+const ShieldCheckIcon = ({ color = GREEN }) => (
+  <Svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+    <Path d="M12 22S20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <Path d="M9 12L11 14L15 10" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </Svg>
 );
 
-const BoltIcon = () => (
-  <Svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <Path d="M12 2L5 13H11L10 20L17 9H11L12 2Z" stroke={GREEN} strokeWidth="1.5"
-      strokeLinecap="round" strokeLinejoin="round" />
+const LockBadgeIcon = () => (
+  <Svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+    <Rect x="5" y="11" width="14" height="10" rx="2" stroke={GREEN} strokeWidth="1.5" />
+    <Path d="M8 11V7a4 4 0 118 0v4" stroke={GREEN} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <Circle cx="12" cy="16" r="1.5" fill={GREEN} />
   </Svg>
 );
 
-// ── Main OTP Screen ────────────────────────────────────────────────────────────
 export const OTPScreen = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
-  const mobile = route.params?.mobile || '9568816858';
+  const mobile = route.params?.mobile || '98765 43210';
 
-  const [otp, setOtp] = useState(['', '', '', '']);
-  const [timer, setTimer] = useState(21);
-  const inputRefs = useRef<Array<TextInput | null>>([null, null, null, null]);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [timer, setTimer] = useState(45);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const inputRefs = useRef<Array<TextInput | null>>([null, null, null, null, null, null]);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => setKeyboardVisible(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setKeyboardVisible(false)
+    );
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (timer > 0) {
@@ -106,7 +70,7 @@ export const OTPScreen = () => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-    if (value !== '' && index < 3) {
+    if (value !== '' && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -124,310 +88,288 @@ export const OTPScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <View style={styles.container}>
-          <LeafBackground />
+    <View style={styles.container}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
-          {/* ── Header ── */}
-          <View style={styles.header}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-              <Svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <Path d="M11 14L6 9L11 4" stroke="#1a1a1a" strokeWidth="2"
-                  strokeLinecap="round" strokeLinejoin="round" />
-              </Svg>
-            </TouchableOpacity>
-            <View style={styles.progressRow}>
-              <View style={[styles.dot, styles.dotActive]} />
-              <View style={styles.dot} />
-              <View style={styles.dot} />
+      <Image
+        source={require('../../assets/auth/login.png')}
+        style={styles.absoluteBackground}
+        resizeMode="cover"
+      />
+
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior="padding"
+      >
+        <View style={[styles.overlay, { paddingBottom: isKeyboardVisible ? 0 : (Platform.OS === 'ios' ? 30 : 100) }]}>
+          {/* Card */}
+          <View style={styles.card}>
+            {/* Top Badge */}
+            <View style={styles.topBadge}>
+              <View style={styles.topBadgeInner}>
+                <LockBadgeIcon />
+              </View>
             </View>
-            <View style={{ width: 40 }} />
+
+            <Text style={styles.title}>Verify Your Mobile Number</Text>
+
+            <View style={styles.lotusDivider}>
+              <View style={styles.line} />
+              <LotusIcon color={GREEN} size={16} />
+              <View style={styles.line} />
+            </View>
+
+            <Text style={styles.subtitle}>Enter the 6-digit OTP sent to</Text>
+            
+            <View style={styles.phoneRow}>
+              <Text style={styles.phoneNumber}>+91 {mobile}</Text>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Text style={styles.changeText}>Change?</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* OTP Boxes */}
+            <View style={styles.otpRow}>
+              {otp.map((digit, i) => (
+                <TextInput
+                  key={i}
+                  ref={ref => { inputRefs.current[i] = ref; }}
+                  style={[styles.otpBox, digit !== '' && styles.otpBoxFilled]}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  value={digit}
+                  placeholder="-"
+                  placeholderTextColor="#ccc"
+                  onChangeText={val => handleOtpChange(val, i)}
+                  onKeyPress={e => handleKeyPress(e, i)}
+                  selectionColor={GREEN}
+                  textAlign="center"
+                />
+              ))}
+            </View>
+
+            {/* Resend */}
+            <Text style={styles.resendTitle}>Didn't receive the OTP?</Text>
+            {timer > 0 ? (
+              <Text style={styles.resendSub}>
+                <Text style={styles.resendLink}>Resend OTP in </Text>
+                <Text style={styles.timerText}>00:{timer.toString().padStart(2, '0')}</Text>
+              </Text>
+            ) : (
+              <TouchableOpacity onPress={() => setTimer(45)}>
+                <Text style={styles.resendLink}>Resend OTP</Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Verify Button */}
+            <TouchableOpacity 
+              style={[styles.verifyBtn, !isComplete && styles.verifyBtnDisabled]} 
+              activeOpacity={0.85} 
+              onPress={handleVerify}
+              disabled={!isComplete}
+            >
+              <Text style={styles.verifyBtnText}>VERIFY OTP</Text>
+              <View style={styles.arrowCircle}>
+                <Icon name="arrow-right" size={16} color="#fff" />
+              </View>
+            </TouchableOpacity>
           </View>
 
-          <ScrollView
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            {/* ── Shield Hero ── */}
-            <View style={styles.heroSection}>
-              <View style={styles.shieldCircle}>
-                <Image source={require('../../assets/logo/logo.png')} style={{ width: 120, height: 120, resizeMode: 'contain' }} />
+        
 
-                <Text style={[styles.sparkle, { top: -10, right: 8 }]}>✦</Text>
-                <Text style={[styles.sparkle, { top: 4, left: -14, fontSize: 11, opacity: 0.7 }]}>✦</Text>
-                <Text style={[styles.sparkle, { bottom: 2, left: -2, fontSize: 10, opacity: 0.5 }]}>✦</Text>
-              </View>
-
-              <View style={styles.titleRow}>
-                <Text style={styles.titleGreen}>Verify </Text>
-                <Text style={styles.titleGold}>OTP</Text>
-              </View>
-              <View style={styles.titleUnderline} />
-            </View>
-
-            {/* ── Subtitle & Phone Pill ── */}
-            <View style={styles.content}>
-              <Text style={styles.subtitle}>Enter the 4-digit code sent to</Text>
-
-              <View style={styles.phonePill}>
-                <View style={styles.phoneIconWrap}>
-                  <Svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <Path
-                      d="M2.5 2h3l1.5 3.5-1.7 1c.6 1.2 1.4 2.1 2.7 2.7l1-1.7L12.5 9v2.5C12.5 12 11 12.5 10.5 12.5 5 12.5 1.5 9 1.5 3.5 1.5 3 2 1.5 2.5 2z"
-                      fill={GREEN}
-                    />
-                  </Svg>
-                </View>
-                <Text style={styles.phoneNumber}>+91 {mobile}</Text>
-                <TouchableOpacity style={styles.editBtn}>
-                  <Text style={styles.editText}>Edit </Text>
-                  <Svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <Path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke={GREEN}
-                      strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </Svg>
-                </TouchableOpacity>
-              </View>
-
-              {/* ── OTP Boxes ── */}
-              <View style={styles.otpRow}>
-                {otp.map((digit, i) => (
-                  <TextInput
-                    key={i}
-                    ref={ref => { inputRefs.current[i] = ref; }}
-                    style={[styles.otpBox, digit !== '' && styles.otpBoxFilled]}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    value={digit}
-                    onChangeText={val => handleOtpChange(val, i)}
-                    onKeyPress={e => handleKeyPress(e, i)}
-                    selectionColor={GREEN}
-                    textAlign="center"
-                  />
-                ))}
-              </View>
-
-              {/* ── Resend Box ── */}
-              <View style={styles.resendBox}>
-                <View style={styles.resendIconWrap}>
-                  <Svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <Path d="M2 8a6 6 0 106-6" stroke={GREEN} strokeWidth="1.5" strokeLinecap="round" />
-                    <Path d="M5 5L2 8L5 11" stroke={GREEN} strokeWidth="1.5"
-                      strokeLinecap="round" strokeLinejoin="round" />
-                  </Svg>
-                </View>
-                <View>
-                  <Text style={styles.resendTitle}>Didn't receive the code?</Text>
-                  {timer > 0 ? (
-                    <Text style={styles.resendSub}>
-                      Resend code in{' '}
-                      <Text style={styles.timerText}>
-                        00:{timer.toString().padStart(2, '0')}
-                      </Text>
-                    </Text>
-                  ) : (
-                    <TouchableOpacity onPress={() => setTimer(30)}>
-                      <Text style={styles.resendLink}>Resend OTP</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-
-              {/* ── Verify Button ── */}
-              <TouchableOpacity
-                style={[styles.verifyBtn, !isComplete && styles.verifyBtnDisabled]}
-                activeOpacity={0.85}
-                onPress={handleVerify}
-                disabled={!isComplete}
-              >
-                <View style={styles.verifyIconWrap}>
-                  <ShieldCheckIcon color="white" />
-                </View>
-                <Text style={styles.verifyText}>Verify & Proceed</Text>
-                <Text style={styles.verifyArrow}>→</Text>
-              </TouchableOpacity>
-
-              {/* ── Trust Cards ── */}
-              <View style={styles.trustRow}>
-                <View style={styles.trustCard}>
-                  <ShieldCheckIcon />
-                  <Text style={styles.trustLabel}>Secure</Text>
-                  <Text style={styles.trustSub}>100% Safe</Text>
-                </View>
-                <View style={styles.trustCard}>
-                  <LockIcon />
-                  <Text style={styles.trustLabel}>Private</Text>
-                  <Text style={styles.trustSub}>Your data is safe</Text>
-                </View>
-                <View style={styles.trustCard}>
-                  <BoltIcon />
-                  <Text style={styles.trustLabel}>Instant</Text>
-                  <Text style={styles.trustSub}>Quick verification</Text>
-                </View>
-              </View>
-
-              {/* ── Privacy Note ── */}
-              <View style={styles.privacyRow}>
-                <ShieldCheckIcon color={MUTED} />
-                <Text style={styles.privacyText}>We never share your number with anyone</Text>
-              </View>
-            </View>
-          </ScrollView>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 
-// ── Styles ─────────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: LIGHT_BG },
-  flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: LIGHT_BG },
-
-  header: {
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  absoluteBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  card: {
+    width: '100%',
+    backgroundColor: CREAM,
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 22,
+    paddingBottom: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 8,
+    marginBottom: 20,
+  },
+  topBadge: {
+    position: 'absolute',
+    top: -20,
+    width: 42,
+    height: 42,
+    borderRadius: 24,
+    backgroundColor: CREAM,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#e5e7e0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  topBadgeInner: {
+    width: 33,
+    height: 33,
+    borderRadius: 18,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: GREEN,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: GREEN,
+    marginBottom: 4,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+    textAlign: 'center',
+  },
+  lotusDivider: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingTop: 8,
-    paddingBottom: 4,
-    zIndex: 1,
+    marginBottom: 8,
+    gap: 8,
   },
-  backBtn: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: '#fff',
-    borderWidth: 1, borderColor: '#e5e7e0',
-    alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
+  line: {
+    width: 30,
+    height: 1,
+    backgroundColor: '#ccc',
   },
-  progressRow: { flexDirection: 'row', gap: 6, alignItems: 'center' },
-  dot: { width: 28, height: 4, borderRadius: 4, backgroundColor: '#e5e7e0' },
-  dotActive: { backgroundColor: GREEN },
-
-  scroll: { flexGrow: 1, justifyContent: 'center', paddingBottom: 32 },
-
-  heroSection: { alignItems: 'center', paddingTop: 16, paddingBottom: 4, zIndex: 1 },
-  shieldCircle: {
-    width: 160, height: 160, borderRadius: 80,
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06, shadowRadius: 20, elevation: 4,
-  },
-  checkBadge: {
-    position: 'absolute', bottom: 8, right: 8,
-    width: 30, height: 30, borderRadius: 15,
-    backgroundColor: GOLD,
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 3, borderColor: LIGHT_BG,
-  },
-  sparkle: { position: 'absolute', color: GOLD, fontSize: 14, fontWeight: '700' },
-
-  titleRow: { marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', },
-  titleGreen: {
-    fontSize: 30, fontWeight: '700', color: GREEN,
-    fontStyle: 'italic',
-  },
-  titleGold: {
-    fontSize: 30, fontWeight: '700', color: GOLD,
-    fontStyle: 'italic',
-  },
-  titleUnderline: {
-    width: 110, height: 3, borderRadius: 2,
-    backgroundColor: GOLD, opacity: 0.6, marginTop: 4,
-  },
-
-  content: { paddingHorizontal: 24, zIndex: 1 },
-
   subtitle: {
-    fontSize: 14, color: MUTED_TEXT,
-    textAlign: 'center', marginTop: 6, marginBottom: 10,
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 6,
   },
-
-  phonePill: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#fff', borderRadius: 40,
-    borderWidth: 1, borderColor: BORDER,
-    paddingVertical: 8, paddingHorizontal: 16,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04, shadowRadius: 4, elevation: 1,
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 14,
   },
-  phoneIconWrap: {
-    width: 28, height: 28, borderRadius: 14,
-    backgroundColor: '#e8f3e8',
-    alignItems: 'center', justifyContent: 'center',
-    marginRight: 10,
+  phoneNumber: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: GREEN,
   },
-  phoneNumber: { fontSize: 14, fontWeight: '600', color: '#1a1a1a', flex: 1 },
-  editBtn: { flexDirection: 'row', alignItems: 'center' },
-  editText: { fontSize: 12, color: GREEN, fontWeight: '600' },
-
+  changeText: {
+    fontSize: 14,
+    color: '#0D7B8A',
+  },
   otpRow: {
-    flexDirection: 'row', justifyContent: 'space-around',
-    marginTop: 20, marginBottom: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 24,
   },
   otpBox: {
-    width: 48, height: 46, borderRadius: 8,
+    width: 44,
+    height: 52,
     backgroundColor: '#fff',
-    borderWidth: 2, borderColor: BORDER,
-    fontSize: 18, fontWeight: '700', color: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#e5e7e0',
+    borderRadius: 10,
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#333',
   },
-  otpBoxFilled: { borderColor: GREEN, backgroundColor: 'rgba(26,92,58,0.05)' },
-
-  resendBox: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#f2f4ef', borderRadius: 16,
-    padding: 14, marginTop: 16, gap: 12,
+  otpBoxFilled: {
+    borderColor: GREEN,
   },
-  resendIconWrap: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: '#fff',
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: BORDER,
+  resendTitle: {
+    fontSize: 13,
+    color: '#555',
+    marginBottom: 6,
   },
-  resendTitle: { fontSize: 13, fontWeight: '600', color: '#1a1a1a' },
-  resendSub: { fontSize: 12, color: MUTED_TEXT, marginTop: 2 },
-  timerText: { color: GOLD, fontWeight: '700' },
-  resendLink: { fontSize: 13, color: GREEN, fontWeight: '600', marginTop: 2 },
-
+  resendSub: {
+    marginBottom: 24,
+  },
+  resendLink: {
+    fontSize: 13,
+    color: GREEN,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  timerText: {
+    fontSize: 13,
+    color: '#333',
+    fontWeight: '600',
+  },
   verifyBtn: {
-    height: 44, borderRadius: 18,
+    width: '100%',
+    height: 48,
     backgroundColor: GREEN,
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 10, marginTop: 16,
-    shadowColor: GREEN, shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2, shadowRadius: 16, elevation: 6,
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: GREEN,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
   },
-  verifyBtnDisabled: { backgroundColor: '#a8c4b4', shadowOpacity: 0 },
-  verifyIconWrap: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    alignItems: 'center', justifyContent: 'center',
+  verifyBtnDisabled: {
+    backgroundColor: '#a8c4b4',
+    shadowOpacity: 0,
   },
-  verifyText: { fontSize: 16, fontWeight: '700', color: '#fff', letterSpacing: 0.5 },
-  verifyArrow: { fontSize: 18, color: '#fff', fontWeight: '700' },
-
-  trustRow: { flexDirection: 'row', gap: 8, marginTop: 14 },
-  trustCard: {
-    flex: 1, backgroundColor: '#fff',
-    borderWidth: 1, borderColor: '#e5e7e0',
-    borderRadius: 14, padding: 10,
-    alignItems: 'center', gap: 4,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04, shadowRadius: 3, elevation: 1,
+  verifyBtnText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: 0.5,
   },
-  trustLabel: { fontSize: 11, fontWeight: '700', color: '#1a1a1a' },
-  trustSub: { fontSize: 10, color: MUTED, textAlign: 'center' },
-
+  arrowCircle: {
+    position: 'absolute',
+    right: 12,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   privacyRow: {
-    flexDirection: 'row', alignItems: 'center',
-    justifyContent: 'center', gap: 6, marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 20,
   },
-  privacyText: { fontSize: 12, color: MUTED },
+  privacyText: {
+    fontSize: 12,
+    color: GREEN,
+    fontWeight: '600',
+  },
 });

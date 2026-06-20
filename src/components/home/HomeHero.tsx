@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 12,
         marginTop: 8,
         marginBottom: 16,
-        borderRadius: 202,
+        borderRadius: 20,
         overflow: 'hidden',
         flexDirection: 'row',
     },

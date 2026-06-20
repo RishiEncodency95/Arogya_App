@@ -22,7 +22,7 @@ export const RootNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Splash" component={OnboardingScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ animation: 'fade' }} />
       <Stack.Screen name="OTP" component={OTPScreen} />
       <Stack.Screen name="Main" component={MainLayout} />
     </Stack.Navigator>
