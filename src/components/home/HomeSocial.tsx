@@ -137,8 +137,8 @@ export const HomeSocial = () => {
 const styles = StyleSheet.create({
     scrollContainer: {
         paddingHorizontal: 6,
-        paddingVertical: 6,
-        gap: 6,
+        paddingVertical: 2,
+        gap: 4,
         flexDirection: 'row',
     },
     card: {

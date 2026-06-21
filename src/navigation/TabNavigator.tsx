@@ -30,7 +30,7 @@ const QRButton = ({ children, onPress }: any) => (
   </TouchableOpacity>
 );
 
-const QRPassScreen = () => <PlaceholderScreen title="QR Pass" />;
+import { QRPassScreen } from '../screens/QRPassScreen';
 
 export const TabNavigator = () => {
   const insets = useSafeAreaInsets();

@@ -57,13 +57,13 @@ export const NextSession = () => {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 6,
-        paddingVertical: 6,
+        paddingVertical: 1,
     },
     card: {
         backgroundColor: '#073220', // Darker rich green
-        borderRadius: 12,
+        borderRadius: 10,
         paddingHorizontal: 10,
-        paddingVertical: 10,
+        paddingVertical: 3,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -95,15 +95,15 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#9BB883', // Olive/light green
         letterSpacing: 0.5,
-        marginBottom: 4,
+        marginBottom: 2,
         textTransform: 'uppercase',
     },
     sessionTitle: {
         color: '#CEDDDE',
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: '600',
         lineHeight: 20,
-        marginBottom: 6,
+        marginBottom: 2,
     },
     infoRow: {
         flexDirection: 'row',

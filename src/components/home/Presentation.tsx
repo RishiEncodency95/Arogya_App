@@ -197,19 +197,20 @@ export const Presentation = () => {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 6,
-        paddingVertical: 6,
+        paddingVertical: 4,
         flexDirection: 'row',
         justifyContent: 'space-between',
         gap: 4,
     },
     card: {
         flex: 1,
-        borderRadius: 16,
+        borderRadius: 12,
         padding: 10,
-        paddingTop: 12,
+        paddingTop: 4,
+        marginBottom: 0,
         overflow: 'hidden',
         position: 'relative',
-        minHeight: 160,
+        minHeight: 135,
         justifyContent: 'space-between',
     },
     leafWrapper: {
@@ -257,10 +258,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderWidth: 1,
         borderRadius: 50,
-        paddingVertical: 4,
+        paddingVertical: 2,
         paddingHorizontal: 8,
         alignSelf: 'flex-start',
         backgroundColor: 'transparent',
+        marginTop: 6,
     },
     btnText: {
         fontSize: 9,

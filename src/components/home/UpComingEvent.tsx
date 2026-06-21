@@ -39,7 +39,7 @@ export const UpComingEvent = () => {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 6,
-        paddingVertical: 6,
+        paddingVertical: 2,
 
     },
     backgroundImage: {
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
     },
     overlay: {
-        paddingVertical: 10,
+        paddingVertical: 3,
         paddingHorizontal: 12,
         backgroundColor: 'rgba(0,0,0,0.1)', // Slight dark overlay just in case text needs contrast
         justifyContent: 'center',

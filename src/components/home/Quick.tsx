@@ -56,10 +56,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 5,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: '#194D34',
   },
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   card: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8,
+    borderRadius: 12,
     // paddingHorizontal: 2,
     // paddingVertical: 4,
     width: 58,
@@ -106,6 +106,6 @@ const styles = StyleSheet.create({
     color: '#1f2937',
     fontWeight: '600',
     lineHeight: 15,
-    marginBottom: 2
+    marginBottom: 0
   },
 });

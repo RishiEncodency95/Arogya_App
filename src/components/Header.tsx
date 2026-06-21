@@ -15,7 +15,7 @@ export const Header = () => {
 
           {/* Left — Hamburger */}
           <TouchableOpacity onPress={() => setSidebarVisible(true)} style={s.menuBtn}>
-            <Icon name="menu" size={22} color="#fff" />
+            <Icon name="menu" size={26} color="#fff" />
           </TouchableOpacity>
 
           {/* Center — Logo */}
@@ -60,7 +60,7 @@ const s = StyleSheet.create({
   },
   menuBtn: { padding: 2 },
   logoWrap: { alignItems: 'center', justifyContent: 'center' },
-  logoImage: { width: 140, height: 30, resizeMode: 'contain'},
+  logoImage: { width: 160, height: 40, resizeMode: 'contain' },
   rightRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   bellWrap: { position: 'relative' },
   badge: {
