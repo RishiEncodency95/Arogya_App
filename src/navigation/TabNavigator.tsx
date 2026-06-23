@@ -11,6 +11,15 @@ import { TracksScreen } from '../screens/TracksScreen';
 import { SpeakersScreen } from '../screens/SpeakersScreen';
 import { MenuScreen } from '../screens/MenuScreen';
 
+import { AboutUsScreen } from '../screens/AboutUsScreen';
+import { PaperScreen } from '../screens/PaperScreen';
+import { EnquiryScreen } from '../screens/EnquiryScreen';
+import { RegistrationFeeScreen } from '../screens/RegistrationFeeScreen';
+import { GalleryScreen } from '../screens/GalleryScreen';
+import { BlogsScreen } from '../screens/BlogsScreen';
+import { ContactUsScreen } from '../screens/ContactUsScreen';
+import { DelegateRegScreen } from '../screens/DelegateRegScreen';
+
 const Tab = createBottomTabNavigator();
 
 const ACTIVE = '#064E3B'; 
@@ -109,6 +118,16 @@ export const TabNavigator = () => {
           ),
         }}
       />
+      
+      {/* Sidebar Hidden Tab Screens */}
+      <Tab.Screen name="AboutUs" component={AboutUsScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="PaperPresentation" component={PaperScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Enquiry" component={EnquiryScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="RegistrationFee" component={RegistrationFeeScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Gallery" component={GalleryScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Blogs" component={BlogsScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="ContactUs" component={ContactUsScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="DelegateRegistration" component={DelegateRegScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
     </Tab.Navigator>
   );
 };

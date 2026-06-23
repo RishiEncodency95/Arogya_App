@@ -4,6 +4,7 @@ import {
   Modal, Animated, Dimensions, TouchableWithoutFeedback, Image, ScrollView, SafeAreaView, Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const SIDEBAR_WIDTH = width * 0.8;
@@ -18,6 +19,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ visible, onClose }: SidebarProps) => {
+  const navigation = useNavigation<any>();
   const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -38,7 +40,7 @@ export const Sidebar = ({ visible, onClose }: SidebarProps) => {
     }
   }, [visible]);
 
-  const handleClose = () => {
+  const handleClose = (callback?: () => void) => {
     Animated.parallel([
       Animated.timing(slideAnim, {
         toValue: -SIDEBAR_WIDTH,
@@ -52,21 +54,29 @@ export const Sidebar = ({ visible, onClose }: SidebarProps) => {
       }),
     ]).start(() => {
       onClose();
+      if (callback) callback();
     });
   };
 
-  const menuItems = [
-    { icon: 'home', label: 'Home', action: () => {}, active: true },
-    { icon: 'grid', label: 'My Pass', action: () => {} },
-    { icon: 'calendar', label: 'Schedule', action: () => {} },
-    { icon: 'mic', label: 'Speakers', action: () => {} },
-    { icon: 'bell', label: 'Notifications', action: () => {}, badge: 3 },
-    { icon: 'headphones', label: 'Help & Support', action: () => {} },
-  ];
+  type MenuItem = {
+    icon: string;
+    label: string;
+    action: () => void;
+    active?: boolean;
+    badge?: number;
+  };
 
-  const otherItems = [
-    { icon: 'user', label: 'My Profile', action: () => {} },
-    { icon: 'settings', label: 'Settings', action: () => {} },
+  const menuItems: MenuItem[] = [
+    { icon: 'home', label: 'Home', action: () => navigation.navigate('Main', { screen: 'Home' }), active: true },
+    { icon: 'info', label: 'About Us', action: () => navigation.navigate('Main', { screen: 'AboutUs' }) },
+    { icon: 'file-text', label: 'Paper Presentation', action: () => navigation.navigate('Main', { screen: 'PaperPresentation' }) },
+    { icon: 'mic', label: 'Speakers', action: () => navigation.navigate('Main', { screen: 'Network' }) },
+    { icon: 'user-plus', label: 'Delegate Registration', action: () => navigation.navigate('Main', { screen: 'DelegateRegistration' }) },
+    { icon: 'help-circle', label: 'Enquiry', action: () => navigation.navigate('Main', { screen: 'Enquiry' }) },
+    { icon: 'credit-card', label: 'Registration Fee', action: () => navigation.navigate('Main', { screen: 'RegistrationFee' }) },
+    { icon: 'image', label: 'Gallery', action: () => navigation.navigate('Main', { screen: 'Gallery' }) },
+    { icon: 'book-open', label: 'Blogs', action: () => navigation.navigate('Main', { screen: 'Blogs' }) },
+    { icon: 'phone', label: 'Contact Us', action: () => navigation.navigate('Main', { screen: 'ContactUs' }) },
   ];
 
   return (
@@ -74,10 +84,10 @@ export const Sidebar = ({ visible, onClose }: SidebarProps) => {
       visible={visible}
       transparent={true}
       animationType="none"
-      onRequestClose={handleClose}
+      onRequestClose={() => handleClose()}
     >
       <View style={styles.overlay}>
-        <TouchableWithoutFeedback onPress={handleClose}>
+        <TouchableWithoutFeedback onPress={() => handleClose()}>
           <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]} />
         </TouchableWithoutFeedback>
 
@@ -89,7 +99,7 @@ export const Sidebar = ({ visible, onClose }: SidebarProps) => {
               {/* Header */}
               <View style={styles.header}>
                 <Image source={require('../assets/logo/logo.png')} style={styles.logo} />
-                <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
+                <TouchableOpacity onPress={() => handleClose()} style={styles.closeBtn}>
                   <Icon name="x" size={20} color={TEXT_DARK} />
                 </TouchableOpacity>
               </View>
@@ -119,7 +129,11 @@ export const Sidebar = ({ visible, onClose }: SidebarProps) => {
                   <TouchableOpacity 
                     key={index} 
                     style={[styles.menuItem, item.active && styles.menuItemActive]} 
-                    onPress={handleClose}
+                    onPress={() => {
+                      handleClose(() => {
+                        item.action();
+                      });
+                    }}
                   >
                     <View style={[styles.menuIconWrap, item.active && styles.menuIconWrapActive]}>
                       <Icon name={item.icon} size={20} color={item.active ? '#fff' : GREEN} />
@@ -135,24 +149,12 @@ export const Sidebar = ({ visible, onClose }: SidebarProps) => {
                 ))}
               </View>
 
-              {/* Others Menu */}
-              <View style={styles.othersContainer}>
-                <Text style={styles.othersTitle}>OTHERS</Text>
-                {otherItems.map((item, index) => (
-                  <TouchableOpacity key={index} style={styles.menuItem} onPress={handleClose}>
-                    <View style={styles.menuIconWrap}>
-                      <Icon name={item.icon} size={20} color={TEXT_GRAY} />
-                    </View>
-                    <Text style={styles.menuLabel}>{item.label}</Text>
-                    <Icon name="chevron-right" size={18} color={TEXT_GRAY} />
-                  </TouchableOpacity>
-                ))}
-              </View>
+              {/* Removed Others Menu as per new design request */}
             </ScrollView>
 
             {/* --- FIXED BOTTOM SECTION --- */}
             <View style={styles.fixedBottom}>
-              <TouchableOpacity style={styles.logoutBtn} onPress={handleClose}>
+              <TouchableOpacity style={styles.logoutBtn} onPress={() => handleClose()}>
                 <Icon name="log-out" size={20} color="#dc2626" />
                 <Text style={styles.logoutText}>Logout</Text>
               </TouchableOpacity>
