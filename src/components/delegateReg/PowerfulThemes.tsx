@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { CheckCircle2, Leaf } from 'lucide-react-native';
 
 const THEMES = [
@@ -10,7 +10,7 @@ const THEMES = [
     title: 'INNOVATE',
     subtitle: 'Driving Healthcare\nThrough Innovation',
     points: ['Medical Innovation & Research', 'Digital Health & AI', 'Startups & Emerging Technologies', 'Future of Healthcare Delivery'],
-    bgImage: 'https://images.unsplash.com/photo-1576091160550-2173ff9e5e3c?auto=format&fit=crop&q=80&w=500',
+    bgImage: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800',
     color: '#208C84',
     bgColor: '#0A2518',
   },
@@ -21,7 +21,7 @@ const THEMES = [
     title: 'COLLABORATE',
     subtitle: 'Building Partnerships\nfor a Healthier World',
     points: ['Industry Collaboration', 'Global Health Partnerships', 'Public-Private Synergy', 'Community Engagement'],
-    bgImage: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=500',
+    bgImage: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800',
     color: '#2B5A8A',
     bgColor: '#0A1525',
   },
@@ -30,9 +30,9 @@ const THEMES = [
     day: 'DAY 3',
     date: '20 JUNE 2026',
     title: 'SUSTAIN',
-    subtitle: 'Sustainable Solutions\nfor Long-Term Impact',
-    points: ['Sustainable Healthcare Systems', 'Wellness, Nutrition & Lifestyle', 'Environmental Health', 'Policy & Governance for Tomorrow'],
-    bgImage: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&q=80&w=500',
+    subtitle: 'Creating Lasting\nEnvironmental Impact',
+    points: ['Sustainable Healthcare', 'Green Hospitals', 'Climate & Health', 'Policy & Governance'],
+    bgImage: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&q=80&w=800',
     color: '#4A7A3A',
     bgColor: '#1A2A1A',
   },
@@ -42,35 +42,38 @@ export const PowerfulThemes = () => {
   return (
     <View style={s.container}>
       <View style={s.headerRow}>
-        <Leaf size={14} color="#133E2B" style={{ transform: [{ scaleX: -1 }] }} />
+        <Leaf size={12} color="#133E2B" style={{ transform: [{ scaleX: -1 }] }} />
         <Text style={s.headerTitle}>3 DAYS. 3 POWERFUL THEMES. ENDLESS POSSIBILITIES.</Text>
-        <Leaf size={14} color="#133E2B" />
+        <Leaf size={12} color="#133E2B" />
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.scrollContent}>
         {THEMES.map((theme) => (
           <View key={theme.id} style={[s.card, { backgroundColor: theme.bgColor }]}>
-            <ImageBackground source={{ uri: theme.bgImage }} style={s.bgImage} imageStyle={s.bgImageStyle}>
-              <View style={s.overlay} />
-              <View style={s.cardContent}>
-                <View style={s.dateBadge}>
-                  <Text style={s.dayText}>{theme.day}</Text>
-                  <Text style={s.dateText}>|  {theme.date}</Text>
-                </View>
-                
-                <Text style={s.title}>{theme.title}</Text>
-                <Text style={s.subtitle}>{theme.subtitle}</Text>
-                
-                <View style={s.pointsList}>
-                  {theme.points.map((pt, idx) => (
-                    <View key={idx} style={s.pointRow}>
-                      <CheckCircle2 size={12} color="#FFF" />
-                      <Text style={s.pointText}>{pt}</Text>
-                    </View>
-                  ))}
-                </View>
+            <Image
+              source={{ uri: theme.bgImage }}
+              style={s.bgImage}
+              resizeMode="cover"
+            />
+            <View style={s.overlay} />
+            <View style={s.cardContent}>
+              <View style={s.dateBadge}>
+                <Text style={s.dayText}>{theme.day}</Text>
+                <Text style={s.dateText}>|  {theme.date}</Text>
               </View>
-            </ImageBackground>
+
+              <Text style={s.title}>{theme.title}</Text>
+              <Text style={s.subtitle} numberOfLines={1} ellipsizeMode="tail">{theme.subtitle}</Text>
+
+              <View style={s.pointsList}>
+                {theme.points.map((pt, idx) => (
+                  <View key={idx} style={s.pointRow}>
+                    <CheckCircle2 size={12} color="#FFF" />
+                    <Text style={s.pointText}>{pt}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
           </View>
         ))}
       </ScrollView>
@@ -81,7 +84,7 @@ export const PowerfulThemes = () => {
 const s = StyleSheet.create({
   container: {
     backgroundColor: '#FAF7F2',
-    paddingVertical: 12,
+    paddingVertical: 6,
   },
   headerRow: {
     flexDirection: 'row',
@@ -103,35 +106,40 @@ const s = StyleSheet.create({
     gap: 6,
   },
   card: {
-    width: 280,
+    width: 300,
     height: 180,
     borderRadius: 12,
     overflow: 'hidden',
   },
   bgImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: '100%',
     height: '100%',
-  },
-  bgImageStyle: {
-    opacity: 0.4,
+    opacity: 0.5,
   },
   overlay: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    // backgroundColor: 'rgba(0,0,0,0.3)',
   },
   cardContent: {
-    padding: 16,
+    paddingHorizontal: 6,
     flex: 1,
     justifyContent: 'center',
   },
   dateBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   dayText: {
     backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 12,
     color: '#FFF',
@@ -145,20 +153,21 @@ const s = StyleSheet.create({
     marginLeft: 8,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '900',
+    fontSize: 17,
+    fontWeight: '800',
     color: '#FFF',
-    marginBottom: 4,
+    marginBottom: 2,
+    letterSpacing: 0.5,
   },
   subtitle: {
-    fontSize: 12,
-    color: '#DDD',
+    fontSize: 14,
+    color: '#EEE',
     fontWeight: '600',
-    marginBottom: 12,
-    lineHeight: 16,
+    marginBottom: 8,
+    // lineHeight: 18,
   },
   pointsList: {
-    gap: 6,
+    gap: 8,
   },
   pointRow: {
     flexDirection: 'row',
@@ -167,7 +176,7 @@ const s = StyleSheet.create({
   },
   pointText: {
     color: '#FFF',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '500',
   },
 });

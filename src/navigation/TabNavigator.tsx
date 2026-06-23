@@ -19,6 +19,7 @@ import { GalleryScreen } from '../screens/GalleryScreen';
 import { BlogsScreen } from '../screens/BlogsScreen';
 import { ContactUsScreen } from '../screens/ContactUsScreen';
 import { DelegateRegScreen } from '../screens/DelegateRegScreen';
+import { DelegateRegistrationFormScreen } from '../screens/DelegateRegistrationFormScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -128,6 +129,7 @@ export const TabNavigator = () => {
       <Tab.Screen name="Blogs" component={BlogsScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="ContactUs" component={ContactUsScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="DelegateRegistration" component={DelegateRegScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="DelegateRegistrationForm" component={DelegateRegistrationFormScreen} options={{ tabBarItemStyle: { display: 'none' } }} />
     </Tab.Navigator>
   );
 };

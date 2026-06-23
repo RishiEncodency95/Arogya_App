@@ -21,20 +21,19 @@ export const ConferenceThemes = () => {
       </View>
       
       <View style={s.card}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.scrollContent}>
+        <View style={s.grid}>
           {THEMES.map((theme, idx) => {
             const Icon = theme.icon;
             return (
               <View key={idx} style={s.item}>
                 <View style={s.iconWrapper}>
-                  <Icon size={24} color="#133E2B" />
+                  <Icon size={20} color="#133E2B" />
                 </View>
                 <Text style={s.label}>{theme.label}</Text>
-                {idx < THEMES.length - 1 && <View style={s.divider} />}
               </View>
             );
           })}
-        </ScrollView>
+        </View>
       </View>
     </View>
   );
@@ -44,14 +43,14 @@ const s = StyleSheet.create({
   container: {
     backgroundColor: '#FAF7F2',
     paddingHorizontal: 6,
-    paddingVertical: 12,
+    paddingVertical: 6,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginBottom: 12,
+    marginBottom: 6,
   },
   headerTitle: {
     fontSize: 14,
@@ -64,22 +63,24 @@ const s = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#EAEAEA',
-    paddingVertical: 12,
+    padding: 12,
   },
-  scrollContent: {
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    gap: 16,
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    rowGap: 12,
+    columnGap: 8,
   },
   item: {
+    width: '48%',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   iconWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: '#E8F5E9',
     justifyContent: 'center',
     alignItems: 'center',
@@ -88,12 +89,7 @@ const s = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     color: '#111A15',
-    width: 80,
-  },
-  divider: {
-    width: 1,
-    height: 30,
-    backgroundColor: '#EAEAEA',
-    marginLeft: 8,
+    flex: 1,
+    lineHeight: 14,
   },
 });

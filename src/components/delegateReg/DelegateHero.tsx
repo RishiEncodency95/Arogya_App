@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { Users, Building2, Globe2, Mic, CalendarDays, ArrowRight } from 'lucide-react-native';
+
+const { width } = Dimensions.get('window');
 
 const STATS = [
   { icon: Users, num: '15,000+', label: 'EXPECTED DELEGATES' },
@@ -14,18 +16,19 @@ export const DelegateHero = () => {
   return (
     <View style={s.container}>
       <View style={s.heroTop}>
-        <Image 
-          source={{ uri: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ce122?auto=format&fit=crop&q=80&w=1000' }} 
-          style={s.bgImage} 
+        <Image
+          source={{ uri: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=1000' }}
+          style={s.bgImage}
+          resizeMode="cover"
         />
         <View style={s.overlay} />
-        
+
         <View style={s.content}>
           <Text style={s.badge}>9th</Text>
           <Text style={s.title}>INTERNATIONAL</Text>
           <Text style={s.subtitle}>HEALTH & WELLNESS</Text>
           <Text style={s.expo}>EXPO 2026</Text>
-          
+
           <Text style={s.desc}>
             Uniting Innovation, Wellness &{'\n'}Sustainability for a Better Tomorrow
           </Text>
@@ -35,7 +38,7 @@ export const DelegateHero = () => {
               <Text style={s.btnPrimaryText}>REGISTER NOW</Text>
               <ArrowRight size={14} color="#FFF" />
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={s.btnSecondary} activeOpacity={0.8}>
               <Mic size={14} color="#FFF" />
               <Text style={s.btnSecondaryText}>BECOME A SPEAKER</Text>
@@ -46,7 +49,7 @@ export const DelegateHero = () => {
 
       <View style={s.statsWrapper}>
         <View style={s.statsContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.statsScroll}>
+          <View style={s.statsGrid}>
             {STATS.map((stat, idx) => {
               const Icon = stat.icon;
               return (
@@ -56,11 +59,10 @@ export const DelegateHero = () => {
                     <Text style={s.statNum}>{stat.num}</Text>
                     <Text style={s.statLabel}>{stat.label}</Text>
                   </View>
-                  {idx < STATS.length - 1 && <View style={s.divider} />}
                 </View>
               );
             })}
-          </ScrollView>
+          </View>
         </View>
       </View>
     </View>
@@ -72,30 +74,37 @@ const s = StyleSheet.create({
     backgroundColor: '#FAF7F2',
   },
   heroTop: {
-    height: 320,
+    height: 260,
     position: 'relative',
-    justifyContent: 'center',
-    paddingHorizontal: 16,
+    justifyContent: 'flex-start',
+    paddingTop: 6,
+    paddingHorizontal: 6,
   },
   bgImage: {
-    ...StyleSheet.absoluteFill,
-    width: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: width,
     height: '100%',
-    opacity: 0.4,
+    opacity: 0.95,
   },
   overlay: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: width,
+    height: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
   },
   content: {
     position: 'relative',
     zIndex: 2,
   },
   badge: {
-    fontSize: 48,
-    fontWeight: '900',
+    fontSize: 40,
+    fontWeight: '700',
     color: '#4A7A3A',
-    marginBottom: -10,
+    marginBottom: -8,
   },
   title: {
     fontSize: 20,
@@ -123,14 +132,14 @@ const s = StyleSheet.create({
   },
   btnRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 12,
     flexWrap: 'wrap',
   },
   btnPrimary: {
     backgroundColor: '#208C84',
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingVertical: 8,
+    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
@@ -143,8 +152,8 @@ const s = StyleSheet.create({
   btnSecondary: {
     backgroundColor: '#133E2B',
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingVertical: 8,
+    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
@@ -156,42 +165,42 @@ const s = StyleSheet.create({
   },
   statsWrapper: {
     paddingHorizontal: 6,
-    marginTop: -24,
+    paddingVertical: 0,
+    marginTop: 0,
     zIndex: 10,
   },
   statsContainer: {
     backgroundColor: '#0A2518',
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 6,
   },
-  statsScroll: {
-    paddingHorizontal: 16,
-    gap: 16,
-    alignItems: 'center',
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 6,
+    rowGap: 6,
+    columnGap: 4,
   },
   statItem: {
+    width: '48%',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   statTextCol: {
     justifyContent: 'center',
+    flex: 1,
   },
   statNum: {
     color: '#EBB422',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '800',
   },
   statLabel: {
     color: '#FFF',
-    fontSize: 9,
+    fontSize: 8,
     fontWeight: '600',
     letterSpacing: 0.5,
-  },
-  divider: {
-    width: 1,
-    height: 24,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    marginLeft: 8,
+    marginTop: 0,
   },
 });

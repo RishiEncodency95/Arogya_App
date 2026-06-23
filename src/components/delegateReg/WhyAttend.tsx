@@ -46,21 +46,21 @@ const s = StyleSheet.create({
   container: {
     backgroundColor: '#FAF7F2',
     paddingHorizontal: 6,
-    paddingVertical: 6,
+    paddingVertical: 0,
   },
   card: {
     backgroundColor: '#FAFAFA',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#EAEAEA',
-    padding: 16,
+    padding: 6,
     overflow: 'hidden',
   },
   title: {
     fontSize: 14,
     fontWeight: '800',
     color: '#133E2B',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   content: {
     flexDirection: 'row',
@@ -81,8 +81,8 @@ const s = StyleSheet.create({
     color: '#333',
   },
   imageCol: {
-    width: 140,
-    height: 140,
+    width: 200,
+    height: 200,
     marginLeft: 16,
     borderRadius: 8,
     overflow: 'hidden',
