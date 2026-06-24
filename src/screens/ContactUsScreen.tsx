@@ -10,13 +10,13 @@ import { ContactMapNewsletter } from '../components/contactUs/ContactMapNewslett
 export const ContactUsScreen = () => {
   return (
     <SafeAreaView style={s.safeArea}>
-     
-      <KeyboardAvoidingView 
-        style={s.keyboardView} 
+
+      <KeyboardAvoidingView
+        style={s.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ScrollView 
-          contentContainerStyle={s.scrollContent} 
+        <ScrollView
+          contentContainerStyle={s.scrollContent}
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
