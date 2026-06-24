@@ -1,329 +1,350 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, FlatList, Dimensions, Animated } from 'react-native';
+import { Calendar, MapPin, ArrowRight, User } from 'lucide-react-native';
 
-const HERO_IMAGES = [
-    require('../../assets/home/homehero.png'),
-    require('../../assets/home/homehero1.png'),
-    require('../../assets/home/homehero2.png'),
+const { width } = Dimensions.get('window');
+const CAROUSEL_WIDTH = width - 12; // marginHorizontal 6 on both sides
+
+const SLIDES = [
+    {
+        id: '0',
+        img: require('../../assets/banner/hero2.webp'),
+        theme: 'gold',
+        accentHex: '#b08735',
+        textHex: '#063e26',
+        iconHex: '#a07b30',
+        subtitle: "India's Premier Conference on\nIntegrated Healthcare, AYUSH,\nPharma, Wellness & Innovation",
+        btn1: { type: 'gold', label: 'REGISTER AS DELEGATE', textCol: '#0b2912', hasArrow: true },
+        btn2: { type: 'darkgreen', label: 'BECOME A SPEAKER', textCol: '#FFF', hasUser: true },
+    },
+    {
+        id: '1',
+        img: require('../../assets/banner/hero3.webp'),
+        theme: 'blue',
+        accentHex: '#0a2c53',
+        textHex: '#043055',
+        iconHex: '#0a2c53',
+        subtitle: "Advancing Science. Enhancing Lives.\nBuilding the Future of Medicine.",
+        btn1: { type: 'blue', label: 'EXPLORE SESSIONS', textCol: '#FFF', hasArrow: true },
+        btn2: { type: 'gold', label: 'REGISTER NOW', textCol: '#0b2912', hasUser: true },
+    },
+    {
+        id: '2',
+        img: require('../../assets/banner/hero4.webp'),
+        theme: 'green',
+        accentHex: '#063e26',
+        textHex: '#063e26',
+        iconHex: '#a07b30',
+        subtitle: "Reviving Ancient Wisdom for\na Healthier Tomorrow",
+        btn1: { type: 'blue', label: 'EXPLORE SESSIONS', textCol: '#FFF', hasArrow: true },
+        btn2: { type: 'gold', label: 'REGISTER NOW', textCol: '#0b2912', hasUser: true },
+    },
+    {
+        id: '3',
+        img: require('../../assets/banner/hero5.webp'),
+        theme: 'green',
+        accentHex: '#063e26',
+        textHex: '#063e26',
+        iconHex: '#a07b30',
+        subtitle: "Innovating Today for a\nHealthier Tomorrow",
+        btn1: { type: 'blue', label: 'EXPLORE SESSIONS', textCol: '#FFF', hasArrow: true },
+        btn2: { type: 'gold', label: 'REGISTER NOW', textCol: '#0b2912', hasUser: true },
+    },
 ];
 
 export const HomeHero = () => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const flatListRef = useRef<FlatList>(null);
+    const progressAnim = useRef(new Animated.Value(0)).current;
 
+    // Carousel Timer
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % HERO_IMAGES.length);
-        }, 4000);
-
+            if (currentIndex === SLIDES.length - 1) {
+                // Instantly snap back to the first slide without a rewind animation
+                flatListRef.current?.scrollToIndex({ index: 0, animated: false });
+                setCurrentIndex(0);
+            } else {
+                const nextIndex = currentIndex + 1;
+                flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+                setCurrentIndex(nextIndex);
+            }
+        }, 5000);
         return () => clearInterval(interval);
-    }, []);
+    }, [currentIndex]);
+
+    // Progress Bar Animation
+    useEffect(() => {
+        progressAnim.setValue(0);
+        Animated.timing(progressAnim, {
+            toValue: 1,
+            duration: 5000,
+            useNativeDriver: false,
+        }).start();
+    }, [currentIndex]);
+
+    const handleScroll = (event: any) => {
+        const x = event.nativeEvent.contentOffset.x;
+        const index = Math.round(x / CAROUSEL_WIDTH);
+        if (index !== currentIndex && index >= 0 && index < SLIDES.length) {
+            setCurrentIndex(index);
+        }
+    };
+
+    const renderSlide = ({ item }: { item: typeof SLIDES[0] }) => {
+        return (
+            <View style={{ width: CAROUSEL_WIDTH, overflow: 'hidden' }}>
+                <ImageBackground
+                    source={item.img}
+                    style={s.slideBackground}
+                    imageStyle={{ resizeMode: 'cover' }}
+                >
+                    {/* Overlay to ensure text readability */}
+                    <View style={s.overlay} />
+
+                    <View style={s.content}>
+                        {/* Edition Tag */}
+                        <View style={s.editionRow}>
+                            <View style={[s.editionLine, { backgroundColor: item.accentHex }]} />
+                            <Text style={[s.editionText, { color: item.accentHex }]}>18TH EDITION OF</Text>
+                            <View style={[s.editionLine, { backgroundColor: item.accentHex }]} />
+                        </View>
+
+                        {/* Title / Logo replacement */}
+                        <View style={s.logoContainer}>
+                            <Text style={s.logoTextTop}>Arogya</Text>
+                            <Text style={s.logoTextBottom}>Sanghosthi 2026</Text>
+                        </View>
+
+                        {/* Subtitle */}
+                        <Text style={[s.subtitleText, { color: item.textHex }]}>
+                            {item.subtitle}
+                        </Text>
+
+                        {/* Date & Location */}
+                        <View style={s.metaContainer}>
+                            <View style={s.metaItem}>
+                                <Calendar size={12} color={item.iconHex} />
+                                <Text style={s.metaText}>21-23 August 2026</Text>
+                            </View>
+                            <Text style={[s.metaSeparator, { color: item.accentHex }]}>|</Text>
+                            <View style={s.metaItem}>
+                                <MapPin size={12} color={item.iconHex} />
+                                <Text style={s.metaText}>Pragati Maidan, New Delhi</Text>
+                            </View>
+                        </View>
+
+                        {/* Buttons */}
+                        <View style={s.buttonsRow}>
+                            <TouchableOpacity 
+                                activeOpacity={0.8} 
+                                style={[s.btn, s[`btn_${item.btn1.type}` as 'btn_gold' | 'btn_blue' | 'btn_darkgreen']]}
+                            >
+                                <Text style={[s.btnText, { color: item.btn1.textCol }]}>{item.btn1.label}</Text>
+                                {item.btn1.hasArrow && <ArrowRight size={12} color={item.btn1.textCol} style={{ marginLeft: 4 }} />}
+                            </TouchableOpacity>
+            
+                            <TouchableOpacity 
+                                activeOpacity={0.8} 
+                                style={[s.btn, s[`btn_${item.btn2.type}` as 'btn_gold' | 'btn_blue' | 'btn_darkgreen']]}
+                            >
+                                {item.btn2.hasUser && <User size={12} color={item.btn2.textCol} style={{ marginRight: 4 }} />}
+                                <Text style={[s.btnText, { color: item.btn2.textCol }]}>{item.btn2.label}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </ImageBackground>
+            </View>
+        );
+    };
 
     return (
-        <ImageBackground
-            source={HERO_IMAGES[currentImageIndex]}
-            style={styles.container}
-            imageStyle={{ resizeMode: 'cover' }}
-        >
-            {/* Background Overlay to tint image white */}
-            <View style={styles.overlay} />
+        <View style={s.container}>
+            <FlatList
+                ref={flatListRef}
+                data={SLIDES}
+                keyExtractor={(item) => item.id}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onMomentumScrollEnd={handleScroll}
+                renderItem={renderSlide}
+            />
 
-            {/* Left side — content */}
-            <View style={styles.content}>
-
-                {/* Welcome pill */}
-                <View style={styles.welcomePill}>
-                    <Text style={styles.welcomeText}>WELCOME</Text>
-                    <Text style={styles.welcomeEmoji}>👏</Text>
-                </View>
-
-                {/* Title */}
-                <View style={styles.titleRow}>
-                    {/* Left: 18th */}
-                    <View style={styles.titleLeft}>
-                        <Text style={styles.titleNumber}>18</Text>
-                        <Text style={styles.titleSuperscript}>th</Text>
-                    </View>
-                    {/* Right: Arogya & Sanghosthi 2026 */}
-                    <View style={styles.titleRight}>
-                        <Text style={styles.titleTextTop}>Arogya</Text>
-                        <Text style={styles.titleTextBottom}>Sanghosthi 2026</Text>
-                    </View>
-                </View>
-
-                {/* Subtitle */}
-                <View style={styles.subtitleContainer}>
-                    <Text style={styles.subtitleText}>
-                        Integrating AYUSH & Modern Science{'\n'}for a Healthier Tomorrow
-                    </Text>
-                </View>
-
-                {/* Meta info */}
-                <View style={styles.metaInfoRow}>
-                    <View style={styles.metaItem}>
-                        <FontAwesome5 name="calendar-alt" size={16} color="#0A4232" />
-                        <Text style={styles.metaText}>21 – 23 August 2026</Text>
-                    </View>
-                    {/* Vertical Divider */}
-                    <View style={styles.verticalDivider} />
-                    <View style={styles.metaItem}>
-                        <Icon name="map-pin" size={16} color="#0A4232" />
-                        <Text style={[styles.metaText]}>Pragati Maidan,{'\n'}New Delhi</Text>
-                    </View>
-                </View>
-
-                {/* Delegate Pass pill */}
-                <View style={styles.delegatePill}>
-                    <MaterialCommunityIcons name="shield-check" size={16} color="#244E32" style={{ marginRight: 6 }} />
-                    <Text style={styles.delegateText}>Delegate Pass Active</Text>
-                </View>
-
-                {/* Buttons */}
-                <View style={styles.buttonsRow}>
-                    <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.85}>
-                        <Icon name="grid" size={12} color="#FFFFFF" />
-                        <Text style={styles.primaryBtnText}>QR Pass</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.secondaryBtn} activeOpacity={0.85}>
-                        <FontAwesome5 name="calendar-alt" size={12} color="#0A4232" />
-                        <Text style={styles.secondaryBtnText}>My Schedule</Text>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
-
-            {/* Carousel dots */}
-            <View style={styles.dotsContainer}>
-                {HERO_IMAGES.map((_, index) => (
-                    <View
-                        key={index}
-                        style={[
-                            styles.dot,
-                            index === currentImageIndex ? styles.activeDot : styles.inactiveDot
-                        ]}
-                    />
+            {/* Dots */}
+            <View style={s.dotsContainer}>
+                {SLIDES.map((_, i) => (
+                    <View key={i} style={[s.dot, i === currentIndex ? s.activeDot : null]} />
                 ))}
             </View>
 
-        </ImageBackground>
+            {/* Progress Bar */}
+            <View style={s.progressContainer}>
+                <Animated.View 
+                    style={[
+                        s.progressBar, 
+                        { width: progressAnim.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }) }
+                    ]} 
+                />
+            </View>
+        </View>
     );
 };
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
     container: {
-        marginHorizontal: 12,
-        marginTop: 2,
-        marginBottom: 0,
+        marginHorizontal: 6,
+        marginTop: 6,
         borderRadius: 16,
         overflow: 'hidden',
-        flexDirection: 'row',
+        height: 240,
+        backgroundColor: '#FFF',
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOpacity: 0.15,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 10,
+    },
+    slideBackground: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
     },
     overlay: {
         ...StyleSheet.absoluteFill,
-        backgroundColor: 'rgba(255, 255, 255, 0.17)',
-        zIndex: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)', 
     },
     content: {
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
         padding: 16,
-        paddingBottom: 12,
+        paddingTop: 20,
+        justifyContent: 'center',
         zIndex: 10,
     },
-    welcomePill: {
+    editionRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-        alignSelf: 'flex-start',
         marginBottom: 8,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
     },
-    welcomeText: {
-        fontSize: 12,
-        fontWeight: '800',
-        color: '#194D34',
-        // letterSpacing: 0.5,
-        marginRight: 4,
+    editionLine: {
+        height: 1.5,
+        width: 30,
     },
-    welcomeEmoji: {
-        fontSize: 12,
+    editionText: {
+        fontSize: 9,
+        fontWeight: '900',
+        marginHorizontal: 8,
+        letterSpacing: 1.2,
     },
-    titleRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 2,
+    logoContainer: {
+        marginBottom: 8,
     },
-    titleLeft: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        marginRight: 6,
-    },
-    titleNumber: {
-        fontSize: 24,
-        lineHeight: 42,
-        fontWeight: 'bold',
-        color: '#005f33',
-        fontFamily: 'PlayfairDisplay-Bold',
-        fontStyle: 'italic',
-        includeFontPadding: false,
-        width: 27,
-    },
-    titleSuperscript: {
-        fontSize: 16,
-        color: '#005f33',
-        fontFamily: 'PlayfairDisplay-Bold',
-        fontStyle: 'italic',
-        marginTop: 2,
-        includeFontPadding: false,
-
-    },
-    titleRight: {
-        justifyContent: 'center',
-    },
-    titleTextTop: {
-        fontSize: 18,
-        fontWeight: '800',
-        color: '#0a192f',
-        lineHeight: 22,
-        includeFontPadding: false,
-    },
-    titleTextBottom: {
-        fontSize: 18,
-        fontWeight: '800',
+    logoTextTop: {
+        fontSize: 22,
+        fontWeight: '900',
         color: '#0a192f',
         lineHeight: 24,
-        includeFontPadding: false,
     },
-    subtitleContainer: {
-        borderLeftWidth: 2,
-        borderLeftColor: '#005f33',
-        paddingLeft: 8,
-        marginBottom: 10,
-        marginTop: 4,
+    logoTextBottom: {
+        fontSize: 22,
+        fontWeight: '900',
+        color: '#0a192f',
+        lineHeight: 24,
     },
     subtitleText: {
-        fontSize: 9,
-        color: '#666B72',
-        fontWeight: '500',
+        fontSize: 12,
+        fontWeight: '700',
+        lineHeight: 18,
+        marginBottom: 12,
     },
-    metaInfoRow: {
+    metaContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 4,
+        marginBottom: 16,
     },
     metaItem: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     metaText: {
-        marginLeft: 4,
-        fontSize: 10,
-        fontWeight: '700',
+        fontSize: 9,
+        fontWeight: '800',
         color: '#0a192f',
+        marginLeft: 4,
+        textTransform: 'uppercase',
     },
-    verticalDivider: {
-        width: 1,
-        height: 20,
-        backgroundColor: '#000',
-        marginHorizontal: 3,
-    },
-    delegatePill: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#DFE7DE',
-        borderRadius: 8,
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        alignSelf: 'flex-start',
-        marginTop: 9,
-        marginBottom: 12,
-    },
-    checkIconWrapper: {
-        backgroundColor: '#0A4232',
-        borderRadius: 20,
-        padding: 2,
-        marginRight: 8,
-    },
-    delegateText: {
-        marginLeft: 0,
-        fontSize: 11,
-        fontWeight: 'bold',
-        color: '#244E32',
+    metaSeparator: {
+        marginHorizontal: 6,
+        fontSize: 12,
+        opacity: 0.5,
     },
     buttonsRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 4,
-        marginBottom: 4
+        gap: 8,
     },
-    primaryBtn: {
+    btn: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#0A4232',
-        borderRadius: 8,
-        paddingHorizontal: 8,
+        paddingHorizontal: 12,
         paddingVertical: 8,
-        marginRight: 10,
-    },
-    primaryBtnText: {
-        fontSize: 9,
-        fontWeight: 'bold',
-        color: 'white',
-        marginLeft: 4,
-    },
-    secondaryBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderColor: '#e5e7eb',
-        borderRadius: 8,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        marginLeft: 2,
-        elevation: 1,
+        borderRadius: 20,
+        borderWidth: 1.5,
+        borderColor: '#FFF',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 2,
     },
-    secondaryBtnText: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        color: '#0A4232',
-        marginLeft: 4,
+    btnText: {
+        fontSize: 8,
+        fontWeight: '900',
+        letterSpacing: 0.5,
+    },
+    btn_gold: {
+        backgroundColor: '#f5c842', 
+    },
+    btn_blue: {
+        backgroundColor: '#032e55',
+    },
+    btn_darkgreen: {
+        backgroundColor: '#063e26',
     },
     dotsContainer: {
         position: 'absolute',
-        bottom: 16,
-        right: 16,
+        bottom: 12,
+        left: 0,
+        right: 0,
         flexDirection: 'row',
+        justifyContent: 'center',
         zIndex: 10,
     },
     dot: {
-        height: 8,
-        borderRadius: 4,
-        marginRight: 8,
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        marginHorizontal: 3,
+        borderWidth: 0.5,
+        borderColor: 'rgba(0,0,0,0.2)',
     },
     activeDot: {
-        width: 16,
-        backgroundColor: 'white',
+        width: 14,
+        backgroundColor: '#FFF',
     },
-    inactiveDot: {
-        width: 8,
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    progressContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 3,
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        zIndex: 20,
+    },
+    progressBar: {
+        height: '100%',
+        backgroundColor: '#f5c842',
     },
 });
