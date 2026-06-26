@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { Users, Building2, Globe2, Mic, CalendarDays, ArrowRight } from 'lucide-react-native';
 
+import { useNavigation } from '@react-navigation/native';
+
 const { width } = Dimensions.get('window');
 
 const STATS = [
@@ -13,6 +15,8 @@ const STATS = [
 ];
 
 export const DelegateHero = () => {
+  const navigation = useNavigation<any>();
+
   return (
     <View style={s.container}>
       <View style={s.heroTop}>
@@ -34,7 +38,11 @@ export const DelegateHero = () => {
           </Text>
 
           <View style={s.btnRow}>
-            <TouchableOpacity style={s.btnPrimary} activeOpacity={0.8}>
+            <TouchableOpacity 
+              style={s.btnPrimary} 
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('DelegateRegistrationForm')}
+            >
               <Text style={s.btnPrimaryText}>REGISTER NOW</Text>
               <ArrowRight size={14} color="#FFF" />
             </TouchableOpacity>

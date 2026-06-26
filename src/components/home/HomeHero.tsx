@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ImageBackground, StyleSheet, FlatList, Dimensions, Animated } from 'react-native';
 import { Calendar, MapPin, ArrowRight, User } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const CAROUSEL_WIDTH = width - 12; // marginHorizontal 6 on both sides
@@ -53,6 +54,7 @@ const SLIDES = [
 ];
 
 export const HomeHero = () => {
+    const navigation = useNavigation<any>();
     const [currentIndex, setCurrentIndex] = useState(0);
     const flatListRef = useRef<FlatList>(null);
     const progressAnim = useRef(new Animated.Value(0)).current;
@@ -88,6 +90,12 @@ export const HomeHero = () => {
         const index = Math.round(x / CAROUSEL_WIDTH);
         if (index !== currentIndex && index >= 0 && index < SLIDES.length) {
             setCurrentIndex(index);
+        }
+    };
+
+    const handleBtnPress = (label: string) => {
+        if (label.includes('REGISTER')) {
+            navigation.navigate('DelegateRegistrationForm');
         }
     };
 
@@ -139,6 +147,7 @@ export const HomeHero = () => {
                             <TouchableOpacity 
                                 activeOpacity={0.8} 
                                 style={[s.btn, s[`btn_${item.btn1.type}` as 'btn_gold' | 'btn_blue' | 'btn_darkgreen']]}
+                                onPress={() => handleBtnPress(item.btn1.label)}
                             >
                                 <Text style={[s.btnText, { color: item.btn1.textCol }]}>{item.btn1.label}</Text>
                                 {item.btn1.hasArrow && <ArrowRight size={12} color={item.btn1.textCol} style={{ marginLeft: 4 }} />}
@@ -147,6 +156,7 @@ export const HomeHero = () => {
                             <TouchableOpacity 
                                 activeOpacity={0.8} 
                                 style={[s.btn, s[`btn_${item.btn2.type}` as 'btn_gold' | 'btn_blue' | 'btn_darkgreen']]}
+                                onPress={() => handleBtnPress(item.btn2.label)}
                             >
                                 {item.btn2.hasUser && <User size={12} color={item.btn2.textCol} style={{ marginRight: 4 }} />}
                                 <Text style={[s.btnText, { color: item.btn2.textCol }]}>{item.btn2.label}</Text>
@@ -212,7 +222,7 @@ const s = StyleSheet.create({
     },
     overlay: {
         ...StyleSheet.absoluteFill,
-        backgroundColor: 'rgba(255, 255, 255, 0.3)', 
+        backgroundColor: 'rgba(255, 255, 255, 0.0)', 
     },
     content: {
         flex: 1,
@@ -256,6 +266,9 @@ const s = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 18,
         marginBottom: 12,
+        textShadowColor: 'rgba(255, 255, 255, 0.95)',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 10,
     },
     metaContainer: {
         flexDirection: 'row',

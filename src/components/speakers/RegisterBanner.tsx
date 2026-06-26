@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { CalendarDays, ArrowRight } from 'lucide-react-native';
 
+import { useNavigation } from '@react-navigation/native';
+
 const C = {
   greenDark: '#0A2518',
   gold: '#EBB422',
@@ -9,6 +11,8 @@ const C = {
 };
 
 export const RegisterBanner = () => {
+  const navigation = useNavigation<any>();
+
   return (
     <View style={s.container}>
       <View style={s.content}>
@@ -19,7 +23,11 @@ export const RegisterBanner = () => {
           <Text style={s.subtitle}>Be a part of insightful sessions and meaningful discussions.</Text>
           <Text style={s.title}>Register now and secure your seat!</Text>
         </View>
-        <TouchableOpacity style={s.button} activeOpacity={0.8}>
+        <TouchableOpacity 
+          style={s.button} 
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate('DelegateRegistrationForm')}
+        >
           <Text style={s.buttonText}>REGISTER NOW</Text>
           <ArrowRight size={16} color={C.greenDark} />
         </TouchableOpacity>

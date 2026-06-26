@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 export const UpComingEvent = () => {
+    const navigation = useNavigation<any>();
+
     return (
         <View style={styles.container}>
             <ImageBackground
@@ -25,7 +28,11 @@ export const UpComingEvent = () => {
                         <Text style={styles.subtitle} numberOfLines={1} adjustsFontSizeToFit>
                             Early Bird Registration Open!
                         </Text>
-                        <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+                        <TouchableOpacity 
+                            style={styles.button} 
+                            activeOpacity={0.8}
+                            onPress={() => navigation.navigate('DelegateRegistrationForm')}
+                        >
                             <Text style={styles.buttonText}>Register Now</Text>
                             <Ionicons name="arrow-forward" size={14} color="#0F172A" />
                         </TouchableOpacity>

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  StatusBar, Image, KeyboardAvoidingView, Platform, Dimensions, Keyboard, Modal
+  StatusBar, Image, KeyboardAvoidingView, Platform, Dimensions, Keyboard, Modal, ActivityIndicator, Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Feather';
 import Svg, { Path } from 'react-native-svg';
+import { API_BASE_URL } from '@env';
 
 const { width } = Dimensions.get('window');
 
@@ -35,7 +36,8 @@ export const LoginScreen = () => {
   const [mobile, setMobile] = useState('');
   const [fullName, setFullName] = useState('');
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(false);
+
   const [countryCode, setCountryCode] = useState('+91');
   const [isCountryModalVisible, setCountryModalVisible] = useState(false);
 
@@ -55,10 +57,33 @@ export const LoginScreen = () => {
     };
   }, []);
 
-  const handleLogin = () => {
-    // Navigate to OTP for verification
-    if (mobile.length > 0) {
-      navigation.navigate('OTP', { mobile });
+  const handleLogin = async () => {
+    if (mobile.length === 0) return Alert.alert("Error", "Please enter your mobile number.");
+    if (mobile.length !== 10) return Alert.alert("Error", "Mobile number must be exactly 10 digits.");
+    if (fullName.trim().length === 0) return Alert.alert("Error", "Please enter your full name.");
+
+    // Validate fullName has only letters and spaces
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!nameRegex.test(fullName)) return Alert.alert("Error", "Full Name can only contain letters and spaces.");
+
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/delegates-registration/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        navigation.navigate('OTP', { mobile });
+      } else {
+        Alert.alert("Login Failed", data.message || "Could not log in.");
+      }
+    } catch (error: any) {
+      Alert.alert("Error", `Server error.\nURL: ${API_BASE_URL}\nMessage: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,9 +119,9 @@ export const LoginScreen = () => {
             <View style={styles.inputContainer}>
               <Icon name="phone" size={18} color={GREEN} style={styles.inputIcon} />
 
-              <TouchableOpacity 
-                style={styles.countryCode} 
-                activeOpacity={0.7} 
+              <TouchableOpacity
+                style={styles.countryCode}
+                activeOpacity={0.7}
                 onPress={() => setCountryModalVisible(true)}
               >
                 <Text style={styles.countryCodeText}>{countryCode}</Text>
@@ -110,8 +135,9 @@ export const LoginScreen = () => {
                 placeholder="Mobile Number"
                 placeholderTextColor="#888"
                 keyboardType="phone-pad"
+                maxLength={10}
                 value={mobile}
-                onChangeText={setMobile}
+                onChangeText={(text) => setMobile(text.replace(/[^0-9]/g, ''))}
               />
             </View>
 
@@ -123,16 +149,22 @@ export const LoginScreen = () => {
                 placeholder="Full Name"
                 placeholderTextColor="#888"
                 value={fullName}
-                onChangeText={setFullName}
+                onChangeText={(text) => setFullName(text.replace(/[^A-Za-z\s]/g, ''))}
               />
             </View>
 
             {/* Login Button */}
-            <TouchableOpacity style={styles.loginBtn} activeOpacity={0.85} onPress={handleLogin}>
-              <Text style={styles.loginBtnText}>LOGIN</Text>
-              <View style={styles.arrowCircle}>
-                <Icon name="arrow-right" size={16} color="#fff" />
-              </View>
+            <TouchableOpacity style={styles.loginBtn} activeOpacity={0.85} onPress={handleLogin} disabled={isLoading}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <>
+                  <Text style={styles.loginBtnText}>LOGIN</Text>
+                  <View style={styles.arrowCircle}>
+                    <Icon name="arrow-right" size={16} color="#fff" />
+                  </View>
+                </>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -146,14 +178,14 @@ export const LoginScreen = () => {
         animationType="slide"
         onRequestClose={() => setCountryModalVisible(false)}
       >
-        <TouchableOpacity 
-          style={styles.modalOverlay} 
-          activeOpacity={1} 
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
           onPressOut={() => setCountryModalVisible(false)}
         >
           <TouchableOpacity activeOpacity={1} style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select Country Code</Text>
-            
+
             {COUNTRIES.map((item, index) => (
               <TouchableOpacity
                 key={index}

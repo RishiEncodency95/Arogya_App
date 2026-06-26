@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  StatusBar, Image, KeyboardAvoidingView, Platform, Keyboard
+  StatusBar, Image, KeyboardAvoidingView, Platform, Dimensions, Keyboard, Alert, ActivityIndicator
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Feather';
+import { API_BASE_URL } from '@env';
 
 const GREEN = '#0A4232';
 const CREAM = '#F8F9F5';
@@ -40,8 +41,10 @@ export const OTPScreen = () => {
   const mobile = route.params?.mobile || '98765 43210';
 
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [timer, setTimer] = useState(45);
+  const [timer, setTimer] = useState(30);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const inputRefs = useRef<Array<TextInput | null>>([null, null, null, null, null, null]);
 
   useEffect(() => {
@@ -83,8 +86,56 @@ export const OTPScreen = () => {
 
   const isComplete = otp.every(d => d !== '');
 
-  const handleVerify = () => {
-    if (isComplete) navigation.replace('Main');
+  const handleVerify = async () => {
+    if (!isComplete) return;
+    
+    setIsVerifying(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/delegates-registration/verify-login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile, otp: otp.join('') }),
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        });
+      } else {
+        Alert.alert("Verification Failed", data.message || "Invalid OTP.");
+      }
+    } catch (error: any) {
+      console.log("Verify Error:", error.message, "URL:", API_BASE_URL);
+      Alert.alert("Error", `Connection error or App error.\nMessage: ${error.message}`);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setIsResending(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/delegates-registration/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile }),
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setTimer(30);
+        Alert.alert("Success", "OTP resent successfully to your WhatsApp.");
+      } else {
+        Alert.alert("Error", data.message || "Could not resend OTP.");
+      }
+    } catch (error: any) {
+      console.log("Resend Error:", error.message, "URL:", API_BASE_URL);
+      Alert.alert("Error", `Server error.\nURL: ${API_BASE_URL}\nMessage: ${error.message}`);
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
@@ -156,8 +207,12 @@ export const OTPScreen = () => {
                 <Text style={styles.timerText}>00:{timer.toString().padStart(2, '0')}</Text>
               </Text>
             ) : (
-              <TouchableOpacity onPress={() => setTimer(45)}>
-                <Text style={styles.resendLink}>Resend OTP</Text>
+              <TouchableOpacity onPress={handleResend} disabled={isResending}>
+                {isResending ? (
+                   <ActivityIndicator size="small" color={GREEN} />
+                ) : (
+                   <Text style={styles.resendLink}>Resend OTP</Text>
+                )}
               </TouchableOpacity>
             )}
 
@@ -166,12 +221,18 @@ export const OTPScreen = () => {
               style={[styles.verifyBtn, !isComplete && styles.verifyBtnDisabled]} 
               activeOpacity={0.85} 
               onPress={handleVerify}
-              disabled={!isComplete}
+              disabled={!isComplete || isVerifying}
             >
-              <Text style={styles.verifyBtnText}>VERIFY OTP</Text>
-              <View style={styles.arrowCircle}>
-                <Icon name="arrow-right" size={16} color="#fff" />
-              </View>
+              {isVerifying ? (
+                 <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                 <>
+                   <Text style={styles.verifyBtnText}>VERIFY OTP</Text>
+                   <View style={styles.arrowCircle}>
+                     <Icon name="arrow-right" size={16} color="#fff" />
+                   </View>
+                 </>
+              )}
             </TouchableOpacity>
           </View>
 

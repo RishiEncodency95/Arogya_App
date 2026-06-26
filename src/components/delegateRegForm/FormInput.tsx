@@ -6,20 +6,43 @@ interface FormInputProps {
   required?: boolean;
   placeholder: string;
   keyboardType?: any;
+  value?: string;
+  onChangeText?: (text: string) => void;
+  maxLength?: number;
+  rightComponent?: React.ReactNode;
 }
 
-export const FormInput: React.FC<FormInputProps> = ({ label, required, placeholder, keyboardType }) => {
+export const FormInput: React.FC<FormInputProps> = ({ 
+  label, 
+  required, 
+  placeholder, 
+  keyboardType,
+  value,
+  onChangeText,
+  maxLength,
+  rightComponent
+}) => {
   return (
     <View style={s.container}>
       <Text style={s.label}>
         {label} {required && <Text style={s.asterisk}>*</Text>}
       </Text>
-      <TextInput 
-        style={s.input} 
-        placeholder={placeholder} 
-        placeholderTextColor="#9CA3AF"
-        keyboardType={keyboardType || 'default'}
-      />
+      <View style={s.inputWrapper}>
+        <TextInput 
+          style={[s.input, rightComponent ? s.inputWithRightBtn : null]} 
+          placeholder={placeholder} 
+          placeholderTextColor="#9CA3AF"
+          keyboardType={keyboardType || 'default'}
+          value={value}
+          onChangeText={onChangeText}
+          maxLength={maxLength}
+        />
+        {rightComponent && (
+          <View style={s.rightComponentContainer}>
+            {rightComponent}
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -27,7 +50,6 @@ export const FormInput: React.FC<FormInputProps> = ({ label, required, placehold
 const s = StyleSheet.create({
   container: {
     marginBottom: 10,
-    flex: 1,
   },
   label: {
     fontSize: 10,
@@ -38,15 +60,29 @@ const s = StyleSheet.create({
   asterisk: {
     color: '#EF4444',
   },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    height: 34,
+  },
   input: {
+    flex: 1,
     borderWidth: 1,
     borderColor: '#D1D5DB',
     borderRadius: 6,
     paddingHorizontal: 10,
-    paddingVertical: 6,
-    height: 34,
     fontSize: 11,
     color: '#111',
     backgroundColor: '#FFF',
+    paddingVertical: 0,
+  },
+  inputWithRightBtn: {
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    borderRightWidth: 0,
+  },
+  rightComponentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

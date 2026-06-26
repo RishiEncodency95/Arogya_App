@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Check } from 'lucide-react-native';
+interface FormAgreementProps {
+  value?: boolean;
+  onValueChange?: (value: boolean) => void;
+}
 
-export const FormAgreement = () => {
-  const [checked, setChecked] = useState(false);
-  
+export const FormAgreement: React.FC<FormAgreementProps> = ({ value = false, onValueChange }) => {
   return (
     <View style={s.container}>
       <TouchableOpacity 
-        style={[s.checkbox, checked && s.checked]} 
+        style={[s.checkbox, value && s.checked]} 
         activeOpacity={0.8}
-        onPress={() => setChecked(!checked)}
+        onPress={() => onValueChange && onValueChange(!value)}
       >
-        {checked && <Check size={12} color="#FFF" />}
+        {value && <Check size={12} color="#FFF" />}
       </TouchableOpacity>
       <Text style={s.text}>
         I agree to the <Text style={s.link}>Terms & Conditions</Text> and <Text style={s.link}>Privacy Policy</Text>. <Text style={s.asterisk}>*</Text>
